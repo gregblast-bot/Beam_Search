@@ -16,7 +16,6 @@ class ExtractGraph:
         # Extract the directed weighted graph, and save to {head_word, {tail_word, probability}}
         self.extract()
 
-        print(self.dg.__str__())
         print("*"*100)
         print("Finished!")
 
@@ -62,13 +61,13 @@ class ExtractGraph:
             return 0.0
             
         tails = self.graph[head_word]
-        total_transitions_from_head = sum(tails.values())
+        total_occurences = sum(tails.values())
 
         # Zero probability if no transitions from head
-        if total_transitions_from_head == 0:
+        if total_occurences == 0:
             return 0.0
 
         # Frequency of the tail_word
         occurrence_of_tail_word = tails.get(tail_word, 0)
 
-        return occurrence_of_tail / total_transitions_from_head
+        return occurrence_of_tail_word / total_occurences
