@@ -60,7 +60,7 @@ class ExtractGraph:
         if head_word not in self.graph:
             return 0.0
             
-        tails = self.graph[head_word]
+        tails = self.getTails(head_word)
         total_occurences = sum(tails.values())
 
         # Zero probability if no transitions from head
@@ -71,3 +71,16 @@ class ExtractGraph:
         occurrence_of_tail_word = tails.get(tail_word, 0)
 
         return occurrence_of_tail_word / total_occurences
+    
+    
+    '''
+    Get all tail words associated with the given head word
+
+    Args:
+        head_word (str): The starting node of the directed edge
+
+    Returns:
+        dict: A dictionary of tail words and their frequencies
+    '''
+    def getTails(self, head_word):
+        return self.graph[head_word]
