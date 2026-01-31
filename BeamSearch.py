@@ -1,4 +1,5 @@
 import StringDouble
+import heapq
 import math
 
 
@@ -39,13 +40,9 @@ class BeamSearch:
                 for tokens, score, probability in sentences:
                     head_word = tokens[-1] # The new head_word is the last token in the current sentence
 
-                    # Leave loop if the token length is greater than or equal to the max token limit
-                    if len(tokens) >= maxToken:
-                        possible_sentences.append([tokens, score, probability])
-                        continue
-
-                    # Leave loop if head_word is the end of sentence token. Otherwise, get all possible next words
-                    if head_word == '</s>':
+                    # Leave loop if the token length is greater than or equal to the max token limit and if head_word is the end of sentence token
+                    # Otherwise, get all possible next words
+                    if len(tokens) >= maxToken or head_word == '</s>':
                         possible_sentences.append([tokens, score, probability])
                         continue
                     else:
@@ -67,8 +64,11 @@ class BeamSearch:
                     break
 
                 # Prune depending on beam width. Sort by probability, where the negative value closest to zero is the highest probability, and keep top k
-                ordered = sorted(possible_sentences, key=lambda x: x[1], reverse=True)
-                sentences = ordered[:beamK]
+                # ordered = sorted(possible_sentences, key=lambda x: x[1], reverse=True)
+                # sentences = ordered[:beamK]
+
+                # Prune depending on beam width. Use nlargest (O(N log K) complexity) instead of full sort (O(N log N) complexity)
+                sentences = heapq.nlargest(beamK, possible_sentences, key=lambda x: x[1])
 
             # The best sentence is the first in the list after sorting. Recreate the sentence string from the tokens.
             best_tokens, best_score, best_probability = sentences[0] 
